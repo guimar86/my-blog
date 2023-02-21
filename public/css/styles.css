@@ -1,9 +1,10 @@
 :root {
-
+    /*https://coolors.co/palette/0d1b2a-1b263b-415a77-778da9-e0e1dd*/
     --nav-bg-color: #1D3557;
     --nav-fe-color: white;
     --body-bg-color: #F1FAEE;
-    --link-hover-color: #E63946;
+    --link-hover-color: #778DA9;
+    --text-color: #0D1B2A;
 }
 
 html {
@@ -16,12 +17,14 @@ body {
     font-family: 'PT Sans', sans-serif;
     margin: 0;
     padding: 0;
+    color: var(--text-color);
 }
 
 h1 {
     font-family: 'Arvo', serif;
     /*font-family: 'Bree Serif', serif;*/
 }
+
 
 nav {
     display: flex;
@@ -71,8 +74,18 @@ main {
     border-radius: 30px;
     padding: 12px 30px;
     color: white;
-    background-color: navy;
+    background-color: var(--nav-bg-color);
     text-decoration: none;
+}
+
+.button:hover {
+
+    background-color: white;
+    border: 1px dashed;
+    border-color: var(--nav-bg-color);
+    color: var(--text-color);
+    transition: .4s;
+    transform: scale(1.2);
 }
 
 #section-compose form {

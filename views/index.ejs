@@ -1,4 +1,4 @@
-<%- include("header") -%>
+<%- include("partials/header") -%>
 
     <main>
 
@@ -6,30 +6,20 @@
 
             <h2>First blog post</h2>
             <div class="subscribe-area">
-                <a href="compose" class="button">Subscribe</a>
+                <a href="compose" class="button">Publish</a>
             </div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Quam pellentesque nec nam aliquam sem. Dolor sit amet consectetur adipiscing.
-                Quisque
-                non tellus orci ac auctor augue mauris augue. Diam sollicitudin tempor id eu nisl nunc mi. Egestas purus
-                viverra accumsan in nisl nisi scelerisque eu ultrices. Blandit libero volutpat sed cras ornare arcu dui
-                vivamus. Quis hendrerit dolor magna eget est lorem. Tellus elementum sagittis vitae et. Molestie ac
-                feugiat
-                sed lectus vestibulum.</p>
-            <h2> Second blog post</h2>
-            <p>Vulputate dignissim suspendisse in est ante in nibh mauris. Fusce ut placerat orci nulla. Elit
-                scelerisque
-                mauris pellentesque pulvinar pellentesque habitant morbi tristique. Ipsum consequat nisl vel pretium.
-                Lacus
-                sed viverra tellus in hac habitasse platea dictumst vestibulum. Turpis egestas sed tempus urna et
-                pharetra
-                pharetra massa. Sed id semper risus in hendrerit. Amet luctus venenatis lectus magna fringilla. At
-                elementum
-                eu facilisis sed odio. Ac feugiat sed lectus vestibulum mattis ullamcorper. Eros donec ac odio tempor
-                orci.
-                Sapien et ligula ullamcorper malesuada proin libero nunc. A scelerisque purus semper eget duis at. At
-                auctor
-                urna nunc id cursus metus aliquam eleifend mi.</p>
+
+            <% posts.forEach(function(post){ %>
+                <h2>
+                    <%= post.title %>
+
+                </h2>
+
+                <p>
+                    <%= post.message.substring(0,100) %>...<a href="post/<%=post.id %>">Read more</a>
+                </p>
+
+                <% }) %>
         </section>
     </main>
     </body>
