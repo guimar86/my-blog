@@ -1,17 +1,39 @@
 //jshint esversion:6
 const express=require("express");
-const bodyParser=require("body-parser");
 const app=express();
-const { v4: uuidv4 } = require('uuid');
-app.use(express.static(__dirname));
-const server_port= process.env.PORT || 3000;
-let ejs = require('ejs');
-app.set("view engine","ejs")
+
+//Body Parser
+const bodyParser=require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const { v4: uuidv4 } = require('uuid');
+
+//ejs
+let ejs = require('ejs');
+app.set("view engine","ejs")
+
+app.use(express.static(__dirname));
+const server_port= process.env.PORT || 3000;
+
+/*MongoDB */
+const MongoClient = require("mongodb").MongoClient;
+const uri='mongodb://root:example@mongo:27017/?maxPoolSize=20&w=majority';
+const assert=require("assert");
+const client = new MongoClient(uri);
 
 let posts=[];
+
+client.connect(function(err){
+
+    assert.equal(null,err);
+    //console.log("Connected successfully to server");
+    const db=client.db("blogs-db");
+    client.close();
+}).then(()=> console.log("Connected to mongodb server"))
+.catch(error => console.error(error.stack));
+
 app.listen(server_port,function(){
+    
     console.log("server running on port "+server_port);
 })
 
@@ -42,7 +64,6 @@ app.post("/compose",(req,res)=>{
         title:req.body.blogPostTitle,
         message:req.body.blogPostMessage
     };
-console.log(JSON.stringify(post)+" was sent ");
     posts.push(post);
     res.redirect("/");
 
