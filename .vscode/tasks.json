@@ -18,6 +18,12 @@
 				"docker-build"
 			],
 			"platform": "node"
+		},{
+			"type": "docker-compose",
+			"label": "docker-compose: release",
+			"dependsOn": [
+				"docker-build"
+			],
 		},
 		{
 			"type": "docker-run",

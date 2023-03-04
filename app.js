@@ -1,6 +1,7 @@
 //jshint esversion:6
 const express=require("express");
 const app=express();
+const MongoClient = require('mongodb').MongoClient;
 
 //Body Parser
 const bodyParser=require("body-parser");
@@ -15,49 +16,39 @@ app.set("view engine","ejs")
 app.use(express.static(__dirname));
 const server_port= process.env.PORT || 3000;
 
-/*MongoDB */
-const MongoClient = require("mongodb").MongoClient;
-const uri='mongodb://root:example@mongo:27017/?maxPoolSize=20&w=majority';
-const assert=require("assert");
-const client = new MongoClient(uri);
 
 let posts=[];
 
-client.connect(function(err){
-
-    assert.equal(null,err);
-    //console.log("Connected successfully to server");
-    const db=client.db("blogs-db");
-    client.close();
-}).then(()=> console.log("Connected to mongodb server"))
-.catch(error => console.error(error.stack));
+/* Mongodb*/
+const url='mongodb://root:example@mongo:27017/?maxPoolSize=20&w=majority';
+const client=new MongoClient(url,{monitorCommands:true});
+client.on('commandStarted', started => console.log(started));
 
 app.listen(server_port,function(){
-    
     console.log("server running on port "+server_port);
-})
+});
 
 app.get("/",(req,res)=>{
-
-    res.render("index",{posts:posts});
+    
+    readFromMongo().then(data=>{
+        res.render("index",{posts:data});
+    });
+    //res.render("index",{posts:posts_from_db});
 });
 
 app.get("/about",(req,res)=>{
-
     res.render("about");
 });
 
-app.get("/contact",(req,res)=>{
+app.get("/contact",(req,res)=>res.render("contact"));
 
-    res.render("contact");
+
+app.get("/blogger",(req,res)=>{
+
+    res.render("blogger");
 });
 
-app.get("/compose",(req,res)=>{
-
-    res.render("compose");
-});
-
-app.post("/compose",(req,res)=>{
+app.post("/blogger",(req,res)=>{
 
     var post={
         id:uuidv4(),
@@ -65,6 +56,7 @@ app.post("/compose",(req,res)=>{
         message:req.body.blogPostMessage
     };
     posts.push(post);
+   saveToMongoDb(post);
     res.redirect("/");
 
 });
@@ -75,3 +67,28 @@ app.get("/post/:blogId",(req,res)=>{
     var found_post=posts.find(post=>post.id===blog_id);
     res.render("blog",{post:found_post});
 });
+
+async function saveToMongoDb(post){
+    console.log("Saving to mongo");
+
+    const database = client.db("blog-posts");
+    const collection = database.collection("blogs");
+    const result = await collection.insertOne(post);
+    console.log(
+       `A document was inserted with the _id: ${result}`,
+    );
+}
+
+async function readFromMongo(){
+
+    console.log("reading from Mongo");
+    var results=[];
+    const database = client.db("blog-posts");
+    const collection = database.collection("blogs");
+    var cursor=await collection.find({});
+    var docs=await cursor.toArray();
+    for await (const doc of docs) {
+        results.push(doc);
+      }
+    return results;
+}
