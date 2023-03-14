@@ -3,6 +3,7 @@ version: '3.4'
 services:
   blog:
     image: blog
+    container_name: blog
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -10,8 +11,8 @@ services:
       NODE_ENV: production
     ports:
       - 3000:3000
-  mongo:
-    image: mongo:4.0.3-xenial
+  mongodb:
+    image: mongo:6.0
     hostname: mongo
     restart: always
     environment:
@@ -21,7 +22,7 @@ services:
        - 27017:27017
 
   mongo-express:
-    image: mongo-express
+    image: mongo-express:0.54.0
     restart: always
     ports:
       - 8081:8081
